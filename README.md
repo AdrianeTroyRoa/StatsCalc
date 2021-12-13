@@ -1,5 +1,7 @@
 # StatsCalc
 Final project for CC 11.0
+
+Introduction
 There are a variety of calculators that we can use to this today
 each has it's own function that help us compute numbers
 from Abacus to Calculators that uses electricity.
