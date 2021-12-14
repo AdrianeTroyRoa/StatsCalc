@@ -1,7 +1,7 @@
-# StatsCalc
+## StatsCalc
 Final project for CC 11.0
 
-Introduction
+#Introduction
 
 There are a variety of calculators that we can use to this today
 each has it's own function that help us compute numbers
@@ -30,14 +30,14 @@ The purpose of this calculator is to do correct calculations, and to do so effic
 The program will undergo a series of sample problem of statistics to test the function of the program.
 
 
-Methodology
+#Methodology
 
 This section will discuss the process of making of the statistic caculator application
 
-Results
+#Results
 
 This section will talk about the result of the statistics caculator on solving a samples of problem
 
-Discussion
+#Discussion
 
 In this section will discuss the findings from the result section
