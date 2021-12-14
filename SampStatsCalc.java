@@ -2,82 +2,118 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class SampStatsCalc implements ActionListener, KeyListener{
     JFrame frame;
-    JLabel meanLabel, mdLabel, moLabel;
-    JTextField textFieldA, textFieldB, meanField, mdField, moField;
+    JLabel meanLabel, mdLabel, moLabel, rLabel, sLabel, vLabel;
+    JTextField textFieldA, meanField, mdField, moField;
+    JTextField rField, sField, vField;
+    JTextArea textFieldB;
     JButton enButton, eqButton, clButton;
     JPanel panel;
     Dimension size;
 
     ArrayList<Double> numb = new ArrayList<Double>();
-    Font myFont = new Font("Arial", Font.BOLD, 14);
+    ArrayList<Double> sortNumb = new ArrayList <Double>();
+    Font myFont = new Font("Roboto", Font.BOLD, 14);
 
     SampStatsCalc() {
-        frame = new JFrame("Simple Stats Calculator");
+        frame = new JFrame("Simple Sample Calculator");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(336,440);
         frame.setLayout(null);
+        frame.setResizable(false);
 
         textFieldA = new JTextField();
         textFieldA.setFont(myFont);
-        textFieldA.setBounds(25, 25, 280, 30);
+        textFieldA.setBounds(15, 25, 300, 25);
         textFieldA.addKeyListener(this);
         
-        textFieldB = new JTextField();
+        textFieldB = new JTextArea();
+        textFieldB.setLineWrap(true);
         textFieldB.setFont(myFont);
         textFieldB.setEditable(false);
-        textFieldB.setBounds(25, 60, 280, 30);
+        textFieldB.setBounds(15, 128, 300, 60);
 
-        enButton = new JButton("\u21A9");
+        enButton = new JButton("Add");
         enButton.addActionListener(this);
         enButton.setFont(myFont);
         enButton.setFocusable(false);
 
-        eqButton = new JButton("=");
+        eqButton = new JButton("Calculate");
         eqButton.addActionListener(this);
         eqButton.setFont(myFont);
         eqButton.setFocusable(false);
 
-        clButton = new JButton("clr");
+        clButton = new JButton("Clear");
         clButton.addActionListener(this);
         clButton.setFont(myFont);
         clButton.setFocusable(false);
 
-        enButton.setBounds(40, 100, 50, 30);
-        eqButton.setBounds(100, 100, 50, 30);
-        clButton.setBounds(160, 100, 80, 30);
+        clButton.setBounds(15, 60, 145, 30);
+        enButton.setBounds(170, 60, 145, 30);
+        eqButton.setBounds(15, 95, 300, 30);
 
         meanField = new JTextField();
         meanField.setFont(myFont);
         meanField.setEditable(false);
-        meanField.setBounds(90, 200, 217, 20);
+        meanField.setBounds(145, 200, 172, 20);
 
         meanLabel = new JLabel("Mean");
         meanLabel.setFont(myFont);
         size = meanLabel.getPreferredSize();
-        meanLabel.setBounds(30, 202, size.width, size.height);
+        meanLabel.setBounds(15, 202, size.width, size.height);
 
         mdField = new JTextField();
         mdField.setFont(myFont);
         mdField.setEditable(false);
-        mdField.setBounds(90, 230, 217, 20);
+        mdField.setBounds(145, 230, 172, 20);
 
         mdLabel = new JLabel("Median");
         mdLabel.setFont(myFont);
         size = mdLabel.getPreferredSize();
-        mdLabel.setBounds(30, 232, size.width, size.height);
+        mdLabel.setBounds(15, 232, size.width, size.height);
 
         moField = new JTextField();
         moField.setFont(myFont);
         moField.setEditable(false);
-        moField.setBounds(90, 260, 217, 20);
+        moField.setBounds(145, 260, 172, 20);
 
         moLabel = new JLabel("Mode");
         moLabel.setFont(myFont);
         size = moLabel.getPreferredSize();
-        moLabel.setBounds(30, 262, size.width, size.height);
+        moLabel.setBounds(15, 262, size.width, size.height);
+
+        rField = new JTextField();
+        rField.setFont(myFont);
+        rField.setEditable(false);
+        rField.setBounds(145, 290, 172, 20);
+
+        rLabel = new JLabel("Range");
+        rLabel.setFont(myFont);
+        size = rLabel.getPreferredSize();
+        rLabel.setBounds(15, 292, size.width, size.height);
+
+        sField = new JTextField();
+        sField.setFont(myFont);
+        sField.setEditable(false);
+        sField.setBounds(145, 320, 172, 20);
+
+        sLabel = new JLabel("Standard Deviation");
+        sLabel.setFont(myFont);
+        size = sLabel.getPreferredSize();
+        sLabel.setBounds(15, 322, size.width, size.height);
+
+        vField = new JTextField();
+        vField.setFont(myFont);
+        vField.setEditable(false);
+        vField.setBounds(145, 350, 172, 20);
+
+        vLabel = new JLabel("Variance");
+        vLabel.setFont(myFont);
+        size = rLabel.getPreferredSize();
+        vLabel.setBounds(15, 352, 100, size.height);
 
         frame.add(enButton);
         frame.add(eqButton);
@@ -88,6 +124,12 @@ public class SampStatsCalc implements ActionListener, KeyListener{
         frame.add(mdLabel);
         frame.add(moField);
         frame.add(moLabel);
+        frame.add(rField);
+        frame.add(rLabel);
+        frame.add(sField);
+        frame.add(sLabel);
+        frame.add(vField);
+        frame.add(vLabel);
         frame.add(textFieldA);
         frame.add(textFieldB);
         frame.setVisible(true);
@@ -126,6 +168,11 @@ public class SampStatsCalc implements ActionListener, KeyListener{
         return mode;
     }
 
+    double range() {
+        Collections.sort(numb);
+        return numb.get(numb.size()-1)-numb.get(0);
+    }
+
     public static void main(String[] args){
         
         SampStatsCalc stat = new SampStatsCalc();
@@ -140,7 +187,7 @@ public class SampStatsCalc implements ActionListener, KeyListener{
     @Override
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
-        if(keyCode == KeyEvent.VK_ENTER){
+        if(keyCode == KeyEvent.VK_SPACE){
             numb.add(Double.parseDouble(textFieldA.getText()));
             textFieldA.setText("");
             textFieldB.setText("");
@@ -150,6 +197,28 @@ public class SampStatsCalc implements ActionListener, KeyListener{
                 else
                     textFieldB.setText(textFieldB.getText().concat(String.valueOf(i))+" ");
             }
+        }
+        if(keyCode == KeyEvent.VK_ENTER){
+            if(mean()%1!=0)
+                meanField.setText(String.valueOf(mean()));
+            else
+                meanField.setText(String.valueOf((int) mean()));
+            if(median()%1!=0)
+                mdField.setText(String.valueOf(median()));
+            else
+                mdField.setText(String.valueOf((int) median()));
+            if(range()%1!=0)
+                rField.setText(String.valueOf((int) range()));
+            else
+                rField.setText(String.valueOf(range()));
+            if(mode()%1!=0 && mode()!=0.0)
+                moField.setText(String.valueOf(mode()));
+            else if(mode()==0.0)
+                moField.setText("None");
+            else
+                moField.setText(String.valueOf((int) mode()));
+            numb.clear();
+            textFieldA.setText("");
         }
     }
 
@@ -189,6 +258,10 @@ public class SampStatsCalc implements ActionListener, KeyListener{
                 mdField.setText(String.valueOf(median()));
             else
                 mdField.setText(String.valueOf((int) median()));
+            if(range()%1!=0)
+                rField.setText(String.valueOf((int) range()));
+            else
+                rField.setText(String.valueOf(range()));
             if(mode()%1!=0 && mode()!=0.0)
                 moField.setText(String.valueOf(mode()));
             else if(mode()==0.0)
