@@ -15,7 +15,6 @@ public class SampStatsCalc implements ActionListener, KeyListener{
     Dimension size;
 
     ArrayList<Double> numb = new ArrayList<Double>();
-    ArrayList<Double> sortNumb = new ArrayList <Double>();
     Font myFont = new Font("Roboto", Font.BOLD, 14);
 
     SampStatsCalc() {
@@ -137,10 +136,16 @@ public class SampStatsCalc implements ActionListener, KeyListener{
     }
 
     double mean() {
-        double sum=0;
+        double sum = 0.0;
         for(double el: numb)
             sum+=el;
-        return sum/numb.size();
+        double average = sum/numb.size();
+        ArrayList<Character> ans = new ArrayList<Character>();
+        for(char i: String.valueOf(average).toCharArray())
+            ans.add(i);
+        if(ans.indexOf('.') < ans.indexOf('9'))
+            average = (double) Math.round(average*10)/10;
+        return average;
     }
 
     double median() {
@@ -170,7 +175,37 @@ public class SampStatsCalc implements ActionListener, KeyListener{
 
     double range() {
         Collections.sort(numb);
-        return numb.get(numb.size()-1)-numb.get(0);
+        double max = numb.get(numb.size()-1);
+        double min = numb.get(0);
+        double diff = max - min;
+        ArrayList<Character> ans = new ArrayList<Character>();
+        for(char i: String.valueOf(diff).toCharArray())
+            ans.add(i);
+        if(ans.indexOf('.') < ans.indexOf('9'))
+            diff = (double) Math.round(diff*10)/10;
+        return diff;
+    }
+
+    double standardDev() {
+        double sumSq = 0.0;
+        for(double el: numb){
+            double squared = el-mean();
+            squared=squared*squared;
+            sumSq+=squared;
+        }
+        double quo = sumSq/(numb.size()-1);
+        return Math.sqrt(quo);
+    }
+
+    double variance() {
+        double sumSq = 0.0;
+        for(double el: numb){
+            double squared = el-mean();
+            squared=squared*squared;
+            sumSq+=squared;
+        }
+        double quo = sumSq/(numb.size()-1);
+        return quo;
     }
 
     public static void main(String[] args){
@@ -188,7 +223,15 @@ public class SampStatsCalc implements ActionListener, KeyListener{
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
         if(keyCode == KeyEvent.VK_SPACE){
-            numb.add(Double.parseDouble(textFieldA.getText()));
+            String given = textFieldA.getText();
+            char[] figure = given.toCharArray();
+            for(char i: figure){
+                if(i=='.'){
+                    given.concat("0");
+                    break;
+                }
+            }
+            numb.add(Double.parseDouble(given));
             textFieldA.setText("");
             textFieldB.setText("");
             for(double i: numb){
@@ -207,16 +250,24 @@ public class SampStatsCalc implements ActionListener, KeyListener{
                 mdField.setText(String.valueOf(median()));
             else
                 mdField.setText(String.valueOf((int) median()));
-            if(range()%1!=0)
-                rField.setText(String.valueOf((int) range()));
-            else
-                rField.setText(String.valueOf(range()));
             if(mode()%1!=0 && mode()!=0.0)
                 moField.setText(String.valueOf(mode()));
             else if(mode()==0.0)
                 moField.setText("None");
             else
                 moField.setText(String.valueOf((int) mode()));
+            if(range()%1!=0)
+                rField.setText(String.valueOf(range()));
+            else
+                rField.setText(String.valueOf((int) range()));
+            if(standardDev()%1!=0)
+                sField.setText(String.valueOf(standardDev()));
+            else
+                sField.setText(String.valueOf((int) standardDev()));
+            if(variance()%1!=0)
+                vField.setText(String.valueOf(variance()));
+            else
+                vField.setText(String.valueOf((int) variance()));
             numb.clear();
             textFieldA.setText("");
         }
@@ -231,7 +282,15 @@ public class SampStatsCalc implements ActionListener, KeyListener{
     @Override
     public void actionPerformed(ActionEvent e){
         if(e.getSource() == enButton){
-            numb.add(Double.parseDouble(textFieldA.getText()));
+            String given = textFieldA.getText();
+            char[] figure = given.toCharArray();
+            for(char i: figure){
+                if(i=='.'){
+                    given.concat("0");
+                    break;
+                }
+            }
+            numb.add(Double.parseDouble(given));
             textFieldA.setText("");
             textFieldB.setText("");
             for(double i: numb){
@@ -248,6 +307,9 @@ public class SampStatsCalc implements ActionListener, KeyListener{
             meanField.setText("");
             mdField.setText("");
             moField.setText("");
+            rField.setText("");
+            sField.setText("");
+            rField.setText("");
         }
         if(e.getSource() == eqButton){
             if(mean()%1!=0)
@@ -258,19 +320,26 @@ public class SampStatsCalc implements ActionListener, KeyListener{
                 mdField.setText(String.valueOf(median()));
             else
                 mdField.setText(String.valueOf((int) median()));
-            if(range()%1!=0)
-                rField.setText(String.valueOf((int) range()));
-            else
-                rField.setText(String.valueOf(range()));
             if(mode()%1!=0 && mode()!=0.0)
                 moField.setText(String.valueOf(mode()));
             else if(mode()==0.0)
                 moField.setText("None");
             else
                 moField.setText(String.valueOf((int) mode()));
+            if(range()%1!=0)
+                rField.setText(String.valueOf(range()));
+            else
+                rField.setText(String.valueOf((int) range()));
+            if(standardDev()%1!=0)
+                sField.setText(String.valueOf(standardDev()));
+            else
+                sField.setText(String.valueOf((int) standardDev()));
+            if(variance()%1!=0)
+                vField.setText(String.valueOf(variance()));
+            else
+                vField.setText(String.valueOf((int) variance()));
             numb.clear();
             textFieldA.setText("");
-
         } 
     }
 }
