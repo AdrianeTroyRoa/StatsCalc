@@ -15,7 +15,7 @@ public class SampStatsCalc implements ActionListener, KeyListener{
     Dimension size;
 
     ArrayList<Double> numb = new ArrayList<Double>();
-    Font myFont = new Font("Roboto", Font.BOLD, 14);
+    Font myFont = new Font("Consolas", Font.BOLD, 14);
 
     SampStatsCalc() {
         frame = new JFrame("Simple Sample Calculator");
@@ -27,6 +27,7 @@ public class SampStatsCalc implements ActionListener, KeyListener{
         textFieldA = new JTextField();
         textFieldA.setFont(myFont);
         textFieldA.setBounds(15, 25, 300, 25);
+        textFieldA.setEditable(false);
         textFieldA.addKeyListener(this);
         
         textFieldB = new JTextArea();
@@ -57,7 +58,7 @@ public class SampStatsCalc implements ActionListener, KeyListener{
         meanField = new JTextField();
         meanField.setFont(myFont);
         meanField.setEditable(false);
-        meanField.setBounds(145, 200, 172, 20);
+        meanField.setBounds(165, 200, 152, 20);
 
         meanLabel = new JLabel("Mean");
         meanLabel.setFont(myFont);
@@ -67,7 +68,7 @@ public class SampStatsCalc implements ActionListener, KeyListener{
         mdField = new JTextField();
         mdField.setFont(myFont);
         mdField.setEditable(false);
-        mdField.setBounds(145, 230, 172, 20);
+        mdField.setBounds(165, 230, 152, 20);
 
         mdLabel = new JLabel("Median");
         mdLabel.setFont(myFont);
@@ -77,7 +78,7 @@ public class SampStatsCalc implements ActionListener, KeyListener{
         moField = new JTextField();
         moField.setFont(myFont);
         moField.setEditable(false);
-        moField.setBounds(145, 260, 172, 20);
+        moField.setBounds(165, 260, 152, 20);
 
         moLabel = new JLabel("Mode");
         moLabel.setFont(myFont);
@@ -87,7 +88,7 @@ public class SampStatsCalc implements ActionListener, KeyListener{
         rField = new JTextField();
         rField.setFont(myFont);
         rField.setEditable(false);
-        rField.setBounds(145, 290, 172, 20);
+        rField.setBounds(165, 290, 152, 20);
 
         rLabel = new JLabel("Range");
         rLabel.setFont(myFont);
@@ -97,7 +98,7 @@ public class SampStatsCalc implements ActionListener, KeyListener{
         sField = new JTextField();
         sField.setFont(myFont);
         sField.setEditable(false);
-        sField.setBounds(145, 320, 172, 20);
+        sField.setBounds(165, 320, 152, 20);
 
         sLabel = new JLabel("Standard Deviation");
         sLabel.setFont(myFont);
@@ -107,7 +108,7 @@ public class SampStatsCalc implements ActionListener, KeyListener{
         vField = new JTextField();
         vField.setFont(myFont);
         vField.setEditable(false);
-        vField.setBounds(145, 350, 172, 20);
+        vField.setBounds(165, 350, 152, 20);
 
         vLabel = new JLabel("Variance");
         vLabel.setFont(myFont);
@@ -140,12 +141,7 @@ public class SampStatsCalc implements ActionListener, KeyListener{
         for(double el: numb)
             sum+=el;
         double average = sum/numb.size();
-        ArrayList<Character> ans = new ArrayList<Character>();
-        for(char i: String.valueOf(average).toCharArray())
-            ans.add(i);
-        if(ans.indexOf('.') < ans.indexOf('9'))
-            average = (double) Math.round(average*10)/10;
-        return average;
+        return (double) Math.round(average*10000)/10000; 
     }
 
     double median() {
@@ -156,21 +152,39 @@ public class SampStatsCalc implements ActionListener, KeyListener{
             return (numb.get(placement-1)+numb.get(placement))/2;
     }
 
-    double mode() {
-        double mode = 0.0;
-        short appearance = 1;
+    void mode() {
+        ArrayList<Double> mode=new ArrayList<Double>();
+        ArrayList<Double> cloneNumb=new ArrayList<Double>();
+
+        short appearance = 0;
         for(double el: numb){
             short inAppear = 0;
             for(double inEl: numb){
                 if(el==inEl)
                     inAppear++;
                 if(inAppear>appearance){
+                    mode.clear();
                     appearance=inAppear;
-                    mode=el;
+                    mode.add(el);
                 }
+                else if(inAppear==appearance && !(mode.contains(el)))
+                    mode.add(el);
             }
+            if(!(cloneNumb.contains(el)))
+                cloneNumb.add(el);
         }
-        return mode;
+
+        for(double i: mode){
+            if(i%1!=0 && i!=0.0)
+                moField.setText(moField.getText().concat(String.valueOf(i)));
+            else
+                moField.setText(moField.getText().concat(String.valueOf((int) i)));
+        }
+
+        if(mode.size()==0 || mode.equals(cloneNumb)){
+            mode.clear();
+            moField.setText("None");
+        }
     }
 
     double range() {
@@ -178,34 +192,29 @@ public class SampStatsCalc implements ActionListener, KeyListener{
         double max = numb.get(numb.size()-1);
         double min = numb.get(0);
         double diff = max - min;
-        ArrayList<Character> ans = new ArrayList<Character>();
-        for(char i: String.valueOf(diff).toCharArray())
-            ans.add(i);
-        if(ans.indexOf('.') < ans.indexOf('9'))
-            diff = (double) Math.round(diff*10)/10;
-        return diff;
+        return (double) Math.round(diff*10000)/10000;
     }
 
     double standardDev() {
         double sumSq = 0.0;
         for(double el: numb){
-            double squared = el-mean();
+            double squared = (double) Math.round((el-mean())*10000)/10000;
             squared=squared*squared;
             sumSq+=squared;
         }
         double quo = sumSq/(numb.size()-1);
-        return Math.sqrt(quo);
+        return (double) Math.round(Math.sqrt(quo)*10000)/10000;
     }
 
     double variance() {
         double sumSq = 0.0;
         for(double el: numb){
-            double squared = el-mean();
+            double squared = (double) Math.round((el-mean())*10000)/10000;
             squared=squared*squared;
             sumSq+=squared;
         }
         double quo = sumSq/(numb.size()-1);
-        return quo;
+        return (double) Math.round(quo*10000)/10000;
     }
 
     public static void main(String[] args){
@@ -234,6 +243,13 @@ public class SampStatsCalc implements ActionListener, KeyListener{
             numb.add(Double.parseDouble(given));
             textFieldA.setText("");
             textFieldB.setText("");
+            meanField.setText("");
+            mdField.setText("");
+            moField.setText("");
+            rField.setText("");
+            sField.setText("");
+            rField.setText("");
+            vField.setText("");
             for(double i: numb){
                 if(i%1==0)
                     textFieldB.setText(textFieldB.getText().concat(String.valueOf((int) i))+" ");
@@ -242,6 +258,34 @@ public class SampStatsCalc implements ActionListener, KeyListener{
             }
         }
         if(keyCode == KeyEvent.VK_ENTER){
+            String given = textFieldA.getText();
+            if(!(given.equals(""))){
+                char[] figure = given.toCharArray();
+                for(char i: figure){
+                    if(i=='.'){
+                        given.concat("0");
+                        break;
+                    }
+                }
+                numb.add(Double.parseDouble(given));
+                textFieldA.setText("");
+                textFieldB.setText("");
+                meanField.setText("");
+                mdField.setText("");
+                moField.setText("");
+                rField.setText("");
+                sField.setText("");
+                rField.setText("");
+                vField.setText("");
+                for(double i: numb){
+                    if(i%1==0)
+                        textFieldB.setText(textFieldB.getText().concat(String.valueOf((int) i))+" ");
+                    else
+                        textFieldB.setText(textFieldB.getText().concat(String.valueOf(i))+" ");
+                }
+            }
+            else{}
+
             if(mean()%1!=0)
                 meanField.setText(String.valueOf(mean()));
             else
@@ -250,12 +294,7 @@ public class SampStatsCalc implements ActionListener, KeyListener{
                 mdField.setText(String.valueOf(median()));
             else
                 mdField.setText(String.valueOf((int) median()));
-            if(mode()%1!=0 && mode()!=0.0)
-                moField.setText(String.valueOf(mode()));
-            else if(mode()==0.0)
-                moField.setText("None");
-            else
-                moField.setText(String.valueOf((int) mode()));
+            mode();
             if(range()%1!=0)
                 rField.setText(String.valueOf(range()));
             else
@@ -270,6 +309,45 @@ public class SampStatsCalc implements ActionListener, KeyListener{
                 vField.setText(String.valueOf((int) variance()));
             numb.clear();
             textFieldA.setText("");
+        }
+        if(keyCode == KeyEvent.VK_0) {
+            textFieldA.setText(textFieldA.getText().concat("0"));
+        }
+        if(keyCode == KeyEvent.VK_1) {
+            textFieldA.setText(textFieldA.getText().concat("1"));
+        }
+        if(keyCode == KeyEvent.VK_2) {
+            textFieldA.setText(textFieldA.getText().concat("2"));
+        }
+        if(keyCode == KeyEvent.VK_3) {
+            textFieldA.setText(textFieldA.getText().concat("3"));
+        }
+        if(keyCode == KeyEvent.VK_4) {
+            textFieldA.setText(textFieldA.getText().concat("4"));
+        }
+        if(keyCode == KeyEvent.VK_5) {
+            textFieldA.setText(textFieldA.getText().concat("5"));
+        }
+        if(keyCode == KeyEvent.VK_6) {
+            textFieldA.setText(textFieldA.getText().concat("6"));
+        }
+        if(keyCode == KeyEvent.VK_7) {
+            textFieldA.setText(textFieldA.getText().concat("7"));
+        }
+        if(keyCode == KeyEvent.VK_8) {
+            textFieldA.setText(textFieldA.getText().concat("8"));
+        }
+        if(keyCode == KeyEvent.VK_9) {
+            textFieldA.setText(textFieldA.getText().concat("9"));
+        }
+        if(keyCode == KeyEvent.VK_PERIOD) {
+            textFieldA.setText(textFieldA.getText().concat("."));
+        }
+        if(keyCode == KeyEvent.VK_BACK_SPACE){
+            StringBuilder sb = new StringBuilder();
+            String given = textFieldA.getText();
+            sb.deleteCharAt(given.length()-1);
+            textFieldA.setText(sb.toString());
         }
     }
 
@@ -293,6 +371,13 @@ public class SampStatsCalc implements ActionListener, KeyListener{
             numb.add(Double.parseDouble(given));
             textFieldA.setText("");
             textFieldB.setText("");
+            meanField.setText("");
+            mdField.setText("");
+            moField.setText("");
+            rField.setText("");
+            sField.setText("");
+            rField.setText("");
+            vField.setText("");
             for(double i: numb){
                 if(i%1==0)
                     textFieldB.setText(textFieldB.getText().concat(String.valueOf((int) i))+" ");
@@ -310,8 +395,34 @@ public class SampStatsCalc implements ActionListener, KeyListener{
             rField.setText("");
             sField.setText("");
             rField.setText("");
+            vField.setText("");
         }
         if(e.getSource() == eqButton){
+            String given = textFieldA.getText();
+            char[] figure = given.toCharArray();
+            for(char i: figure){
+                if(i=='.'){
+                    given.concat("0");
+                    break;
+                }
+            }
+            numb.add(Double.parseDouble(given));
+            textFieldA.setText("");
+            textFieldB.setText("");
+            meanField.setText("");
+            mdField.setText("");
+            moField.setText("");
+            rField.setText("");
+            sField.setText("");
+            rField.setText("");
+            vField.setText("");
+            for(double i: numb){
+                if(i%1==0)
+                    textFieldB.setText(textFieldB.getText().concat(String.valueOf((int) i))+" ");
+                else
+                    textFieldB.setText(textFieldB.getText().concat(String.valueOf(i))+" ");
+            }
+
             if(mean()%1!=0)
                 meanField.setText(String.valueOf(mean()));
             else
@@ -320,12 +431,7 @@ public class SampStatsCalc implements ActionListener, KeyListener{
                 mdField.setText(String.valueOf(median()));
             else
                 mdField.setText(String.valueOf((int) median()));
-            if(mode()%1!=0 && mode()!=0.0)
-                moField.setText(String.valueOf(mode()));
-            else if(mode()==0.0)
-                moField.setText("None");
-            else
-                moField.setText(String.valueOf((int) mode()));
+            mode();
             if(range()%1!=0)
                 rField.setText(String.valueOf(range()));
             else
@@ -339,7 +445,6 @@ public class SampStatsCalc implements ActionListener, KeyListener{
             else
                 vField.setText(String.valueOf((int) variance()));
             numb.clear();
-            textFieldA.setText("");
         } 
     }
 }
