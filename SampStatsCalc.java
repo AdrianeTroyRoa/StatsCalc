@@ -29,6 +29,7 @@ public class SampStatsCalc implements ActionListener, KeyListener{
         textFieldA.setBounds(15, 25, 300, 25);
         textFieldA.setEditable(false);
         textFieldA.addKeyListener(this);
+        textFieldA.getCaret().setVisible(true);
         
         textFieldB = new JTextArea();
         textFieldB.setLineWrap(true);
@@ -176,9 +177,9 @@ public class SampStatsCalc implements ActionListener, KeyListener{
 
         for(double i: mode){
             if(i%1!=0 && i!=0.0)
-                moField.setText(moField.getText().concat(String.valueOf(i)));
+                moField.setText(moField.getText().concat(String.valueOf(i)).concat(" "));
             else
-                moField.setText(moField.getText().concat(String.valueOf((int) i)));
+                moField.setText(moField.getText().concat(String.valueOf((int) i)).concat(" "));
         }
 
         if(mode.size()==0 || mode.equals(cloneNumb)){
@@ -341,13 +342,24 @@ public class SampStatsCalc implements ActionListener, KeyListener{
             textFieldA.setText(textFieldA.getText().concat("9"));
         }
         if(keyCode == KeyEvent.VK_PERIOD) {
-            textFieldA.setText(textFieldA.getText().concat("."));
+            boolean check = true;
+            for(char i: textFieldA.getText().toCharArray()){
+                if(i == '.')
+                    check = false;
+            }
+            if(check)
+                textFieldA.setText(textFieldA.getText().concat("."));
         }
         if(keyCode == KeyEvent.VK_BACK_SPACE){
-            StringBuilder sb = new StringBuilder();
-            String given = textFieldA.getText();
-            sb.deleteCharAt(given.length()-1);
-            textFieldA.setText(sb.toString());
+            ArrayList<Character> given = new ArrayList<Character>();
+            for(char i:textFieldA.getText().toCharArray())
+                given.add(i);
+            given.remove(given.size()-1);
+
+            textFieldA.setText("");
+
+            for(char i: given)
+                textFieldA.setText(textFieldA.getText().concat(String.valueOf(i)));
         }
     }
 
